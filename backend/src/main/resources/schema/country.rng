@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<element name="Country" xmlns="http://relaxng.org/ns/structure/1.0">
-    <element name="Code">
-        <text/>
-    </element>
-    <element name="UrlCode">
-        <text/>
-    </element>
-    <element name="Name">
-        <text/>
-    </element>
+<element name="Countries" xmlns="http://relaxng.org/ns/structure/1.0">
+    <zeroOrMore>
+        <element name="Country">
+            <element name="Code">
+                <text/>
+            </element>
+            <element name="UrlCode">
+                <text/>
+            </element>
+            <element name="Name">
+                <text/>
+            </element>
+        </element>
+    </zeroOrMore>
 </element>

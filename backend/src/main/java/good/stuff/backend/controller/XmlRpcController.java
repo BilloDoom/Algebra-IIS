@@ -34,13 +34,11 @@ public class XmlRpcController {
 
     @PostMapping(value = "/xmlrpc", consumes = "text/xml", produces = "text/xml")
     public void handleXmlRpc(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        // Read raw XML from request
         String xmlIn;
         try (InputStream is = req.getInputStream()) {
             xmlIn = new String(is.readAllBytes(), resp.getCharacterEncoding());
         }
 
-        // Parse XML-RPC request: method call with params -> extract first param string (city name)
         Document reqDoc = saxBuilder.build(new StringReader(xmlIn));
         Element stringEl = reqDoc.getRootElement()
                 .getChild("params")
@@ -49,10 +47,8 @@ public class XmlRpcController {
                 .getChild("string");
         String cityName = stringEl.getText().trim();
 
-        // Call service to get city->temperature map
         Map<String, String> results = weatherService.getTemperature(cityName);
 
-        // Build XML-RPC response document
         Document resDoc = new Document();
         Element methodResponse = new Element("methodResponse");
         resDoc.setRootElement(methodResponse);
@@ -69,7 +65,6 @@ public class XmlRpcController {
         Element struct = new Element("struct");
         value.addContent(struct);
 
-        // Add each city and temperature as a member of the struct
         for (Map.Entry<String, String> e : results.entrySet()) {
             Element member = new Element("member");
             struct.addContent(member);
@@ -81,7 +76,6 @@ public class XmlRpcController {
             member.addContent(memberValue);
         }
 
-        // Write response with XML content type
         resp.setStatus(200);
         resp.setContentType("text/xml;charset=UTF-8");
         try (OutputStream os = resp.getOutputStream()) {

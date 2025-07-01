@@ -2,90 +2,103 @@ package good.stuff.backend.soap;
 
 import good.stuff.backend.model.Country;
 import good.stuff.backend.model.CountryList;
+import good.stuff.backend.model.SearchResult;
 import jakarta.jws.WebService;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.ValidationEvent;
-import jakarta.xml.bind.ValidationEventHandler;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 @WebService(endpointInterface = "good.stuff.backend.soap.CountrySearchService")
 public class CountrySearchServiceImpl implements CountrySearchService {
 
-    private final File xmlFile = new File("data/countries.xml");
+    private final File xmlFile = new File("data/countries/countries.xml");
 
     @Override
-    public List<String> searchCountriesByTerm(String term) {
+    public SearchResult searchCountriesByTerm(String term) {
         try {
-            fetchAndSaveCountryData(term);
-            return filterXmlWithXPath(xmlFile,term);
+            List<String> validationErrors = validateXmlWithJaxb(xmlFile);
+            if (!validationErrors.isEmpty()) {
+                return new SearchResult(null, validationErrors);
+            }
+
+            List<Country> filteredCountries = filterXmlWithXPathAsObjects(xmlFile, term);
+
+            CountryList filteredCountryList = new CountryList(filteredCountries);
+
+            return new SearchResult(filteredCountryList, List.of());
 
         } catch (Exception e) {
             e.printStackTrace();
-            return List.of("Error: " + e.getMessage());
+            return new SearchResult(null, List.of("Error: " + e.getMessage()));
         }
     }
 
-    private void fetchAndSaveCountryData(String term) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
 
-        String url = "https://localhost:8080/countries?search=" + term;
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Failed to fetch countries: HTTP " + response.statusCode());
-        }
-
-        try (FileWriter writer = new FileWriter(xmlFile)) {
-            writer.write(response.body());
-        }
-    }
-
-    private List<String> filterXmlWithXPath(File xmlFile, String term) throws Exception {
-        List<String> results = new ArrayList<>();
-
+    private List<Country> filterXmlWithXPathAsObjects(File xmlFile, String term) throws Exception {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         org.w3c.dom.Document doc = builder.parse(xmlFile);
 
         XPath xpath = XPathFactory.newInstance().newXPath();
-        XPathExpression expr = xpath.compile("//Country[contains(translate(Name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "') or contains(translate(Code, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "')]");
+
+        XPathExpression expr = xpath.compile(
+                "//Country[contains(translate(Name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "')"
+                        + " or contains(translate(Code, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "')]"
+        );
 
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
+        JAXBContext jc = JAXBContext.newInstance(Country.class);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+        List<Country> countries = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++) {
-            org.w3c.dom.Node node = nodes.item(i);
-            results.add(nodeToString(node));
+            Country country = (Country) unmarshaller.unmarshal(nodes.item(i));
+            countries.add(country);
         }
 
-        return results;
+        return countries;
     }
 
-    private String nodeToString(org.w3c.dom.Node node) throws Exception {
-        javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
-        java.io.StringWriter writer = new java.io.StringWriter();
-        transformer.transform(new javax.xml.transform.dom.DOMSource(node), new javax.xml.transform.stream.StreamResult(writer));
-        return writer.toString();
-    }
+    private List<String> validateXmlWithJaxb(File xmlFile) throws Exception {
+        JAXBContext jc = JAXBContext.newInstance(CountryList.class);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
 
+        try (InputStream xsdStream = getClass().getClassLoader().getResourceAsStream("schema/country.xsd")) {
+            if (xsdStream == null) {
+                throw new RuntimeException("Could not find country.xsd in classpath 'schema/' folder");
+            }
+            SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = sf.newSchema(new StreamSource(xsdStream));
+            unmarshaller.setSchema(schema);
+        }
+
+        List<String> errors = new ArrayList<>();
+
+        unmarshaller.setEventHandler(event -> {
+            errors.add(event.getMessage());
+            return true; // collect all errors
+        });
+
+        unmarshaller.unmarshal(xmlFile);
+
+        return errors;
+    }
 }

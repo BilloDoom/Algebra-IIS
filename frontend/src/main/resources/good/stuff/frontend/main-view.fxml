@@ -99,19 +99,37 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <RadioButton id="rbtnXSD" mnemonicParsing="false" selected="true" text="XSD" fx:id="xsdRadio">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="uploadMode" />
-                                 </toggleGroup>
-                              </RadioButton>
-                              <RadioButton id="rbtnRNG" fx:id="rngRadio" mnemonicParsing="false" text="RNG" toggleGroup="$uploadMode">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </RadioButton>
+                              <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <RadioButton id="rbtnXSD" mnemonicParsing="false" selected="true" text="XSD" fx:id="xsdRadio">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="uploadMode" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton id="rbtnRNG" fx:id="rngRadio" mnemonicParsing="false" text="RNG" toggleGroup="$uploadMode">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </RadioButton>
+                                          <Button fx:id="sendRawXmlButton" mnemonicParsing="false" text="Send">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <TextArea fx:id="textAreaRawXml" prefHeight="200.0" prefWidth="200.0" promptText="raw xml input" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextArea>
+                                 </children>
+                              </HBox>
                            </children>
                            <HBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -144,11 +162,11 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                            <children>
-                              <Button id="searchSOAP" mnemonicParsing="false" text="Search">
+                              <Button id="searchSOAP" fx:id="soapSearchButton" mnemonicParsing="false" text="Search">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin></Button>
-                              <CheckBox id="instaSearchSOAP" mnemonicParsing="false" selected="true" text="Insta-search">
+                              <CheckBox id="instaSearchSOAP" fx:id="soapInstaUpdateCheckBox" mnemonicParsing="false" selected="true" text="Insta-search">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin></CheckBox>
@@ -157,7 +175,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Separator>
-                              <TextField id="txtfWeather" promptText="soap input" HBox.hgrow="ALWAYS">
+                              <TextField id="txtfWeather" fx:id="soapInputField" promptText="soap input" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -169,7 +187,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </Separator>
-                        <TextArea id="txtaSOAP" prefHeight="200.0" prefWidth="200.0" promptText="N/A" VBox.vgrow="ALWAYS">
+                        <TextArea id="txtaSOAP" fx:id="soapOutputArea" prefHeight="200.0" prefWidth="200.0" promptText="N/A" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>

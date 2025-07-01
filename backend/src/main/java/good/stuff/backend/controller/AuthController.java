@@ -41,8 +41,6 @@ public class AuthController {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        // For example only, store users in-memory (a real app would use DB)
-        // We'll simulate a user store with a static map here
         if (UserStore.users.containsKey(username)) {
             return ResponseEntity.status(400).body("Username already exists");
         } else {

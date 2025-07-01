@@ -58,9 +58,10 @@ public class CountryService {
     }
 
     public void saveXmlToDisk(String xml) throws JAXBException, IOException {
-        Country newCountry = convertXmlToCountry(xml);
+        JAXBContext context = JAXBContext.newInstance(CountryList.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        CountryList newCountryList = (CountryList) unmarshaller.unmarshal(new StringReader(xml));
 
-        // Use a directory outside of resources, e.g. ./data/countries/
         File countriesDir = new File("data/countries");
         if (!countriesDir.exists() && !countriesDir.mkdirs()) {
             throw new IOException("Failed to create directory for country XMLs.");
@@ -75,17 +76,16 @@ public class CountryService {
             countriesList = new ArrayList<>();
         }
 
-        // Avoid duplicates by code
-        boolean exists = countriesList.stream()
-                .anyMatch(c -> c.getCode() != null && c.getCode().equals(newCountry.getCode()));
-
-        if (!exists) {
-            countriesList.add(newCountry);
+        for (Country newCountry : newCountryList.getCountries()) {
+            boolean exists = countriesList.stream()
+                    .anyMatch(c -> c.getCode() != null && c.getCode().equals(newCountry.getCode()));
+            if (!exists) {
+                countriesList.add(newCountry);
+            }
         }
 
         CountryList countriesWrapper = new CountryList(countriesList);
 
-        JAXBContext context = JAXBContext.newInstance(CountryList.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 

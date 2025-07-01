@@ -3,6 +3,7 @@ package good.stuff.frontend;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -15,13 +16,16 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+
+import static good.stuff.frontend.Utils.prettyFormatXml;
 
 public class MainController {
 
@@ -62,6 +66,12 @@ public class MainController {
     private ToggleGroup schemaToggleGroup;
 
     @FXML
+    private Button sendRawXmlButton;
+
+    @FXML
+    private TextArea textAreaRawXml;
+
+    @FXML
     private ListView<Country> countryListView;
 
     @FXML
@@ -72,6 +82,18 @@ public class MainController {
 
     @FXML
     private TextField txtName;
+
+    @FXML
+    private TextField soapInputField;
+
+    @FXML
+    private Button soapSearchButton;
+
+    @FXML
+    private CheckBox soapInstaUpdateCheckBox;
+
+    @FXML
+    private TextArea soapOutputArea;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -196,6 +218,141 @@ public class MainController {
             }
         });
 
+        soapSearchButton.setOnAction(event -> {
+            try {
+                String term = soapInputField.getText();
+                if (term == null || term.isBlank()) {
+                    soapOutputArea.setText("Please enter a search term.");
+                    return;
+                }
+                String soapResponse = callSoapService(term);
+                String prettyXml = prettyFormatXml(soapResponse);
+                soapOutputArea.setText(prettyXml);
+            } catch (Exception e) {
+                soapOutputArea.setText("Error: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        sendRawXmlButton.setOnAction(event -> sendXmlToValidator());
+    }
+
+    private void sendXmlToValidator() {
+        String xmlContent = textAreaRawXml.getText().trim();
+        if (xmlContent.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Required", "Please enter XML content to validate.");
+            return;
+        }
+
+        String url = null;
+        if (xsdRadio.isSelected()) {
+            url = "http://localhost:8080/api/countries/xsd";
+        } else if (rngRadio.isSelected()) {
+            url = "http://localhost:8080/api/countries/rng";
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Selection Required", "Please select either XSD or RNG validation.");
+            return;
+        }
+
+        String finalUrl = url;
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create(finalUrl))
+                            .header("Content-Type", "application/xml")
+                            .POST(HttpRequest.BodyPublishers.ofString(xmlContent))
+                            .build();
+
+                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                    if (response.statusCode() == 200) {
+                        showAlertLater(Alert.AlertType.INFORMATION, "Success", response.body());
+                    } else {
+                        showAlertLater(Alert.AlertType.ERROR, "Validation Failed", response.body());
+                    }
+                } catch (Exception e) {
+                    showAlertLater(Alert.AlertType.ERROR, "Error", "Exception: " + e.getMessage());
+                }
+                return null;
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    // Run alert on JavaFX Application Thread
+    private void showAlertLater(Alert.AlertType type, String title, String message) {
+        javafx.application.Platform.runLater(() -> showAlert(type, title, message));
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private String callSoapService(String term) throws IOException {
+        String soapEndpointUrl = "http://localhost:9090/CountrySearchService";
+        String soapAction = "";
+
+        String soapRequestBody =
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:gs=\"http://soap.backend.stuff.good/\">\n" +
+                        "   <soapenv:Header/>\n" +
+                        "   <soapenv:Body>\n" +
+                        "      <gs:searchCountriesByTerm>\n" +
+                        "         <term>" + escapeXml(term) + "</term>\n" +
+                        "      </gs:searchCountriesByTerm>\n" +
+                        "   </soapenv:Body>\n" +
+                        "</soapenv:Envelope>";
+
+        URL url = new URL(soapEndpointUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+        if (!soapAction.isEmpty()) {
+            connection.setRequestProperty("SOAPAction", soapAction);
+        }
+        connection.setDoOutput(true);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            os.write(soapRequestBody.getBytes("UTF-8"));
+        }
+
+        int responseCode = connection.getResponseCode();
+
+        InputStream inputStream;
+        if (responseCode == 200) {
+            inputStream = connection.getInputStream();
+        } else {
+            inputStream = connection.getErrorStream();
+        }
+
+        return readStreamAsString(inputStream);
+    }
+
+    private String readStreamAsString(InputStream stream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null) {
+                response.append(line).append("\n");
+            }
+            return response.toString();
+        }
+    }
+
+    private String escapeXml(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 
     @FXML
@@ -231,6 +388,7 @@ public class MainController {
                 "    </param>\n" +
                 "  </params>\n" +
                 "</methodCall>";
+
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/xmlrpc"))
