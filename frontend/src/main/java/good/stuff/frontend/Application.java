@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("auth-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Algebra-IIS");
         stage.setScene(scene);
@@ -20,6 +20,6 @@ public class Application extends javafx.application.Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

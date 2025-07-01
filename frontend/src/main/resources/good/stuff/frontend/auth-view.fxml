@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="good.stuff.frontend.AuthViewController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <children>
+        <Label layoutX="150" layoutY="60" text="Username:" />
+        <TextField fx:id="usernameField" layoutX="230" layoutY="55" prefWidth="200" />
+
+        <Label layoutX="150" layoutY="110" text="Password:" />
+        <PasswordField fx:id="passwordField" layoutX="230" layoutY="105" prefWidth="200" />
+
+        <Button fx:id="loginButton" layoutX="230" layoutY="160" text="Login" />
+        <Button fx:id="registerButton" layoutX="320" layoutY="160" text="Register" />
+
+        <Label fx:id="messageLabel" layoutX="230" layoutY="210" textFill="red" />
+    </children>
+</AnchorPane>

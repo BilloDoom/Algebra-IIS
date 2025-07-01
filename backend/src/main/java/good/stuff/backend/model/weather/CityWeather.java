@@ -14,6 +14,13 @@ public class CityWeather {
     @XmlElement(name = "GradIme")
     private String cityName;
 
-    @XmlElement(name = "Temp")
-    private String temperature;
+    @XmlElement(name = "Podatci")
+    private WeatherDetails podatci;
+
+    public String getTemperature() {
+        if (podatci != null) {
+            return podatci.getTemp() != null ? podatci.getTemp().trim() : null;
+        }
+        return null;
+    }
 }

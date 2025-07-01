@@ -37,6 +37,8 @@ dependencies {
 
     // === JWT (token-based security) ===
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
@@ -53,6 +55,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
 
     implementation 'com.sun.xml.ws:jaxws-rt:3.0.2'
+
+    implementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:3.0.2'
+
+    implementation 'org.jdom:jdom2:2.0.6'
 }
 
 tasks.named('test') {

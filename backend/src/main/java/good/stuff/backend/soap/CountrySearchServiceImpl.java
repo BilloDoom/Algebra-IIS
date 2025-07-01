@@ -33,22 +33,8 @@ public class CountrySearchServiceImpl implements CountrySearchService {
     @Override
     public List<String> searchCountriesByTerm(String term) {
         try {
-            // 1. Fetch country data from REST API filtered by term
             fetchAndSaveCountryData(term);
-
-            // 2. Validate XML with XSD from resources folder, parse to JAXB objects
-            List<Country> validCountries = validateAndParseCountries(xmlFile, "countries.xsd");
-
-            // 3. Filter valid countries by term (case-insensitive)
-            List<String> filteredXmlStrings = new ArrayList<>();
-            for (Country c : validCountries) {
-                if (c.getCode().toLowerCase().contains(term.toLowerCase()) ||
-                        c.getName().toLowerCase().contains(term.toLowerCase())) {
-                    // Convert Country object back to XML snippet string
-                    filteredXmlStrings.add(convertCountryToXml(c));
-                }
-            }
-            return filteredXmlStrings;
+            return filterXmlWithXPath(xmlFile,term);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,11 +45,10 @@ public class CountrySearchServiceImpl implements CountrySearchService {
     private void fetchAndSaveCountryData(String term) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
 
-        String url = "https://your-rest-api.com/countries?search=" + term;
+        String url = "https://localhost:8080/countries?search=" + term;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .header("x-api-key", "YOUR_API_KEY") // if needed
                 .GET()
                 .build();
 
@@ -77,37 +62,30 @@ public class CountrySearchServiceImpl implements CountrySearchService {
         }
     }
 
-    private List<Country> validateAndParseCountries(File xmlFile, String xsdResourcePath) throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance(CountryList.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    private List<String> filterXmlWithXPath(File xmlFile, String term) throws Exception {
+        List<String> results = new ArrayList<>();
 
-        // Load XSD schema from resources folder
-        SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-        try (InputStream xsdStream = getClass().getClassLoader().getResourceAsStream(xsdResourcePath)) {
-            if (xsdStream == null) {
-                throw new RuntimeException("XSD schema file not found in resources: " + xsdResourcePath);
-            }
-            Schema schema = sf.newSchema(new javax.xml.transform.stream.StreamSource(xsdStream));
-            unmarshaller.setSchema(schema);
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        org.w3c.dom.Document doc = builder.parse(xmlFile);
+
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        XPathExpression expr = xpath.compile("//Country[contains(translate(Name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "') or contains(translate(Code, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '" + term.toLowerCase() + "')]");
+
+        org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            results.add(nodeToString(node));
         }
 
-        unmarshaller.setEventHandler(new ValidationEventHandler() {
-            @Override
-            public boolean handleEvent(ValidationEvent event) {
-                System.err.println("Validation error: " + event.getMessage());
-                return false;  // stop unmarshalling on error
-            }
-        });
-
-        CountryList countries = (CountryList) unmarshaller.unmarshal(xmlFile);
-        return countries.getCountries();
+        return results;
     }
 
-    private String convertCountryToXml(Country country) throws Exception {
-        // Simple marshalling of single Country object to XML string
-        JAXBContext context = JAXBContext.newInstance(Country.class);
-        java.io.StringWriter sw = new java.io.StringWriter();
-        context.createMarshaller().marshal(country, sw);
-        return sw.toString();
+    private String nodeToString(org.w3c.dom.Node node) throws Exception {
+        javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
+        java.io.StringWriter writer = new java.io.StringWriter();
+        transformer.transform(new javax.xml.transform.dom.DOMSource(node), new javax.xml.transform.stream.StreamResult(writer));
+        return writer.toString();
     }
+
 }

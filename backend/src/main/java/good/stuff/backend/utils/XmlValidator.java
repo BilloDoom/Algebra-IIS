@@ -14,10 +14,10 @@ import java.io.File;
 
 public class XmlValidator {
     public static void main(String[] args) throws JAXBException, SAXException {
-        File xmlFile = new File("request.xml");   // your XML file
-        File xsdFile = new File("schema.xsd");    // your XSD file
+        File xmlFile = new File("request.xml");
+        File xsdFile = new File("schema.xsd");
 
-        JAXBContext jc = JAXBContext.newInstance(CountryList.class); // Replace with your JAXB root class
+        JAXBContext jc = JAXBContext.newInstance(CountryList.class);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
 
         SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");

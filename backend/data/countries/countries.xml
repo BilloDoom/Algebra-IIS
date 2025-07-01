@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Countries>
     <Country>
-        <Code>AF</Code>
-        <UrlCode>afghanistan</UrlCode>
-        <Name>Afghanistan</Name>
-    </Country>
-    <Country>
-        <Code>AX</Code>
-        <UrlCode>land-islands</UrlCode>
-        <Name>Åland Islands</Name>
-    </Country>
-    <Country>
         <Code>AL</Code>
         <UrlCode>albania</UrlCode>
         <Name>Albania</Name>
@@ -53,7 +43,7 @@
     <Country>
         <Code>AR</Code>
         <UrlCode>argentina</UrlCode>
-        <Name>Argentina</Name>
+        <Name>BoobLand</Name>
     </Country>
     <Country>
         <Code>AM</Code>
@@ -1259,5 +1249,10 @@
         <Code>ZW</Code>
         <UrlCode>zimbabwe</UrlCode>
         <Name>Zimbabwe</Name>
+    </Country>
+    <Country>
+        <Code>BLiggus</Code>
+        <UrlCode>argentina</UrlCode>
+        <Name>BoobLand</Name>
     </Country>
 </Countries>

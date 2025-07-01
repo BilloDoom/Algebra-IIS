@@ -1,112 +1,264 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" minHeight="200.0" minWidth="300.0" prefHeight="600.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="good.stuff.frontend.HelloController">
+<VBox prefHeight="728.0" prefWidth="1091.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="good.stuff.frontend.MainController">
    <children>
-      <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <tabs>
-          <Tab text="Object Editor">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0">
+      <GridPane gridLinesVisible="true" prefHeight="662.0" prefWidth="1091.0" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+               <children>
+                  <Label text="Rest Api CRUD">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <VBox layoutX="14.0" layoutY="36.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <VBox prefHeight="314.0" prefWidth="288.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER_LEFT" maxHeight="25.0" minHeight="25.0" prefHeight="25.0">
+                              <HBox alignment="CENTER_LEFT" minHeight="20.0" minWidth="200.0" prefHeight="20.0" prefWidth="200.0">
                                  <children>
-                                    <Button maxHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" text="Fetch" />
-                                    <CheckBox mnemonicParsing="false" text="Auto fetch">
+                                    <Label text="Code">
                                        <HBox.margin>
-                                          <Insets left="10.0" />
-                                       </HBox.margin></CheckBox>
-                                    <HBox alignment="CENTER_RIGHT" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Button maxHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" text="Create" HBox.hgrow="ALWAYS" />
-                                          <Button maxHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" text="Edit">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin></Button>
-                                          <Button maxHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" text="Delete">
-                                             <HBox.margin>
-                                                <Insets />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin></Label>
+                                    <TextField id="txtfCode" fx:id="txtCode" HBox.hgrow="ALWAYS" />
                                  </children>
                                  <VBox.margin>
-                                    <Insets />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </HBox>
-                              <Separator>
-                                 <padding>
-                                    <Insets bottom="10.0" top="10.0" />
-                                 </padding>
+                              <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" minHeight="20.0" minWidth="200.0" prefHeight="20.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Url Code">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin></Label>
+                                    <TextField id="txtfUrlCode" fx:id="txtUrlCode" HBox.hgrow="ALWAYS" />
+                                 </children>
                                  <VBox.margin>
-                                    <Insets />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="110.0" minHeight="20.0" minWidth="200.0" prefHeight="20.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Name">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin></Label>
+                                    <TextField id="txtfName" fx:id="txtName" HBox.hgrow="ALWAYS" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <Separator prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <HBox VBox.vgrow="ALWAYS">
+                              <HBox maxHeight="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <ListView prefHeight="429.0" prefWidth="444.0" />
-                                    <Separator orientation="VERTICAL" prefHeight="200.0">
-                                       <padding>
-                                          <Insets left="10.0" right="10.0" />
-                                       </padding>
-                                    </Separator>
-                                    <VBox prefHeight="200.0" prefWidth="100.0">
-                                       <children>
-                                          <HBox VBox.vgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Label" />
-                                                <TextField />
-                                             </children>
-                                          </HBox>
-                                          <TextArea prefHeight="345.0" prefWidth="261.0" />
-                                       </children>
-                                    </VBox>
+                                    <Button id="btnFetch" fx:id="fetchButton" mnemonicParsing="false" text="Fetch">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button id="btnCreate" fx:id="createButton" mnemonicParsing="false" text="Create">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button id="btnUpdate" fx:id="updateButton" mnemonicParsing="false" text="Update">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button id="btnDelete" fx:id="deleteButton" mnemonicParsing="false" text="Delete">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
                                  </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
-                                    <Insets />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
-                              </HBox>
+                              </Separator>
+                              <RadioButton id="rbtnXSD" mnemonicParsing="false" selected="true" text="XSD" fx:id="xsdRadio">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="uploadMode" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton id="rbtnRNG" fx:id="rngRadio" mnemonicParsing="false" text="RNG" toggleGroup="$uploadMode">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </RadioButton>
                            </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
                         </VBox>
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="SOAP Search">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ListView id="lstCRUD" fx:id="countryListView" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </ListView>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="496.0" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+               <children>
+                  <Label text="SOAP">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <VBox layoutX="14.0" layoutY="14.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <HBox alignment="CENTER_LEFT" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
                            <children>
-                              <HBox alignment="CENTER_RIGHT" maxHeight="50.0" minHeight="50.0" prefHeight="50.0">
-                                 <children>
-                                    <TextField prefHeight="25.0" promptText="search field" HBox.hgrow="ALWAYS">
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin></TextField>
-                                    <Button mnemonicParsing="false" text="Search">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin></Button>
-                                    <CheckBox mnemonicParsing="false" selected="true" text="Auto update" />
-                                 </children>
-                              </HBox>
-                              <ListView focusTraversable="false" prefHeight="503.0" prefWidth="762.0" />
+                              <Button id="searchSOAP" mnemonicParsing="false" text="Search">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin></Button>
+                              <CheckBox id="instaSearchSOAP" mnemonicParsing="false" selected="true" text="Insta-search">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin></CheckBox>
+                              <Separator orientation="VERTICAL" prefHeight="200.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Separator>
+                              <TextField id="txtfWeather" promptText="soap input" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
                            </children>
-                        </VBox>
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
+                        </HBox>
+                        <Separator prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <TextArea id="txtaSOAP" prefHeight="200.0" prefWidth="200.0" promptText="N/A" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </TextArea>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="253.0" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Wow look nothing...">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" text="Logout">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@hloe-mole.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ImageView>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="374.0" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Weather Search">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Button id="searchWeather" fx:id="searchWeather" mnemonicParsing="false" text="Search">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <CheckBox id="instaSearchWeather" fx:id="instaSearchWeather" mnemonicParsing="false" selected="true" text="Insta-search">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </CheckBox>
+                              <Separator orientation="VERTICAL" prefHeight="200.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Separator>
+                              <TextField id="txtfWeather" fx:id="txtfWeather" promptText="city input" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Separator>
+                        <TextArea id="txtaWeather" fx:id="txtaWeather" prefHeight="200.0" prefWidth="200.0" promptText="N/A" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </TextArea>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
    </children>
 </VBox>
